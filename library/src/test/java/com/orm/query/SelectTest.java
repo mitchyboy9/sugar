@@ -1,23 +1,22 @@
 package com.orm.query;
 
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
 import com.orm.model.TestRecord;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertEquals;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SelectTest {
 
     @Test
     public void testMergeCondition(){
-        Select where = Select.from(TestRecord.class).where(Condition.prop("test").eq("satya"));
+        Select<TestRecord> where = Select.from(TestRecord.class).where(Condition.prop("test").eq("satya"));
         assertEquals("(test = ? )", where.getWhereCond());
         assertEquals(1, where.getArgs().length);
         assertEquals("satya", where.getArgs()[0]);
@@ -31,7 +30,7 @@ public final class SelectTest {
 
     @Test
     public void testWhere(){
-        Select where = Select.from(TestRecord.class).where(Condition.prop("test").eq("satya"));
+        Select<TestRecord> where = Select.from(TestRecord.class).where(Condition.prop("test").eq("satya"));
         assertEquals("(test = ? )", where.getWhereCond());
         assertEquals(1, where.getArgs().length);
         assertEquals("satya", where.getArgs()[0]);
@@ -74,7 +73,7 @@ public final class SelectTest {
 
     @Test
     public void testWhereOr(){
-        Select where = Select.from(TestRecord.class).whereOr(Condition.prop("test").eq("satya"));
+        Select<TestRecord> where = Select.from(TestRecord.class).whereOr(Condition.prop("test").eq("satya"));
         assertEquals("(test = ? )", where.getWhereCond());
         assertEquals(1, where.getArgs().length);
         assertEquals("satya", where.getArgs()[0]);
@@ -88,7 +87,7 @@ public final class SelectTest {
 
     @Test
     public void testAnd(){
-        Select where = Select.from(TestRecord.class).whereOr(Condition.prop("test").eq("satya"));
+        Select<TestRecord> where = Select.from(TestRecord.class).whereOr(Condition.prop("test").eq("satya"));
         assertEquals("(test = ? )", where.getWhereCond());
         assertEquals(1, where.getArgs().length);
         assertEquals("satya", where.getArgs()[0]);
@@ -103,7 +102,7 @@ public final class SelectTest {
 
     @Test
     public void testOr(){
-        Select where = Select.from(TestRecord.class).whereOr(Condition.prop("test").eq("satya"));
+        Select<TestRecord> where = Select.from(TestRecord.class).whereOr(Condition.prop("test").eq("satya"));
         assertEquals("(test = ? )", where.getWhereCond());
         assertEquals(1, where.getArgs().length);
         assertEquals("satya", where.getArgs()[0]);
@@ -118,7 +117,7 @@ public final class SelectTest {
 
     @Test
     public void testIsNull() {
-        Select where = Select.from(TestRecord.class).where(Condition.prop("test").isNull());
+        Select<TestRecord> where = Select.from(TestRecord.class).where(Condition.prop("test").isNull());
         assertEquals("(test IS NULL )", where.getWhereCond());
         assertEquals(0, where.getArgs().length);
 
@@ -129,7 +128,7 @@ public final class SelectTest {
 
     @Test
     public void testIsNotNull() {
-        Select where = Select.from(TestRecord.class).where(Condition.prop("test").isNotNull());
+        Select<TestRecord> where = Select.from(TestRecord.class).where(Condition.prop("test").isNotNull());
         assertEquals("(test IS NOT NULL )", where.getWhereCond());
         assertEquals(0, where.getArgs().length);
 

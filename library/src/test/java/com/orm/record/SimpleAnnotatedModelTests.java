@@ -1,13 +1,12 @@
 package com.orm.record;
 
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
 import com.orm.helper.NamingHelper;
 import com.orm.model.SimpleAnnotatedModel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Field;
@@ -37,30 +36,30 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SimpleAnnotatedModelTests {
 
     @Test
-    public void emptyDatabaseTest() throws Exception {
+    public void emptyDatabaseTest() {
         assertEquals(0L, count(SimpleAnnotatedModel.class));
     }
 
     @Test
-    public void oneSaveTest() throws Exception {
+    public void oneSaveTest() {
         save(new SimpleAnnotatedModel());
         assertEquals(1L, count(SimpleAnnotatedModel.class));
     }
 
     @Test
-    public void twoSaveTest() throws Exception {
+    public void twoSaveTest() {
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
         assertEquals(2L, count(SimpleAnnotatedModel.class));
     }
 
     @Test
-    public void manySaveTest() throws Exception {
+    public void manySaveTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -68,35 +67,35 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void defaultIdTest() throws Exception {
+    public void defaultIdTest() {
         assertEquals(1L, save(new SimpleAnnotatedModel()));
     }
 
     @Test
-    public void whereCountTest() throws Exception {
+    public void whereCountTest() {
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
-        assertEquals(1L, count(SimpleAnnotatedModel.class, "id = ?", new String[]{"1"}));
+        assertEquals(1L, count(SimpleAnnotatedModel.class, "id = ?", "1"));
     }
 
     @Test
-    public void whereNoCountTest() throws Exception {
-        assertEquals(0L, count(SimpleAnnotatedModel.class, "id = ?", new String[]{"1"}));
+    public void whereNoCountTest() {
+        assertEquals(0L, count(SimpleAnnotatedModel.class, "id = ?", "1"));
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
-        assertEquals(0L, count(SimpleAnnotatedModel.class, "id = ?", new String[]{"3"}));
-        assertEquals(0L, count(SimpleAnnotatedModel.class, "id = ?", new String[]{"a"}));
+        assertEquals(0L, count(SimpleAnnotatedModel.class, "id = ?", "3"));
+        assertEquals(0L, count(SimpleAnnotatedModel.class, "id = ?", "a"));
     }
 
     @Test
-    public void whereBrokenCountTest() throws Exception {
+    public void whereBrokenCountTest() {
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
-        assertEquals(-1L, count(SimpleAnnotatedModel.class, "di = ?", new String[]{"1"}));
+        assertEquals(-1L, count(SimpleAnnotatedModel.class, "di = ?", "1"));
     }
 
     @Test
-    public void deleteTest() throws Exception {
+    public void deleteTest() {
         SimpleAnnotatedModel model = new SimpleAnnotatedModel();
         save(model);
         assertEquals(1L, count(SimpleAnnotatedModel.class));
@@ -105,7 +104,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void deleteUnsavedTest() throws Exception {
+    public void deleteUnsavedTest() {
         SimpleAnnotatedModel model = new SimpleAnnotatedModel();
         assertEquals(0L, count(SimpleAnnotatedModel.class));
         assertFalse(delete(model));
@@ -127,7 +126,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void deleteAllTest() throws Exception {
+    public void deleteAllTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -138,7 +137,7 @@ public final class SimpleAnnotatedModelTests {
 
     @Test
     @SuppressWarnings("all")
-    public void deleteAllWhereTest() throws Exception {
+    public void deleteAllWhereTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -148,7 +147,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void deleteInTransactionFewTest() throws Exception {
+    public void deleteInTransactionFewTest() {
         SimpleAnnotatedModel first = new SimpleAnnotatedModel();
         SimpleAnnotatedModel second = new SimpleAnnotatedModel();
         SimpleAnnotatedModel third = new SimpleAnnotatedModel();
@@ -161,7 +160,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void deleteInTransactionManyTest() throws Exception {
+    public void deleteInTransactionManyTest() {
         List<SimpleAnnotatedModel> models = new ArrayList<>();
 
         for (int i = 1; i <= 100; i++) {
@@ -179,13 +178,13 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void saveInTransactionTest() throws Exception {
+    public void saveInTransactionTest() {
         saveInTx(new SimpleAnnotatedModel(), new SimpleAnnotatedModel());
         assertEquals(2L, count(SimpleAnnotatedModel.class));
     }
 
     @Test
-    public void listAllTest() throws Exception {
+    public void listAllTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -199,7 +198,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void findTest() throws Exception {
+    public void findTest() {
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
 
@@ -210,7 +209,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void findWithQueryTest() throws Exception {
+    public void findWithQueryTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -226,48 +225,48 @@ public final class SimpleAnnotatedModelTests {
 
     @Test
     @SuppressWarnings("all")
-    public void findByIdTest() throws Exception {
+    public void findByIdTest() {
         save(new SimpleAnnotatedModel());
         assertEquals(1L, findById(SimpleAnnotatedModel.class, 1L).getId().longValue());
     }
 
     @Test
-    public void findByIdIntegerTest() throws Exception {
+    public void findByIdIntegerTest() {
         save(new SimpleAnnotatedModel());
         assertEquals(1L, findById(SimpleAnnotatedModel.class, 1).getId().longValue());
     }
 
     @Test
-    public void findByIdStringsNullTest() throws Exception {
+    public void findByIdStringsNullTest() {
         save(new SimpleAnnotatedModel());
         assertEquals(0, findById(SimpleAnnotatedModel.class, new String[]{""}).size());
     }
 
     @Test
-    public void findByIdStringsOneTest() throws Exception {
+    public void findByIdStringsOneTest() {
         save(new SimpleAnnotatedModel());
-        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, new String[]{"1"});
+        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, "1");
         assertEquals(1, models.size());
         assertEquals(1L, models.get(0).getId().longValue());
     }
 
     @Test
-    public void findByIdStringsTwoTest() throws Exception {
+    public void findByIdStringsTwoTest() {
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
         save(new SimpleAnnotatedModel());
-        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, new String[]{"1", "3"});
+        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, "1", "3");
         assertEquals(2, models.size());
         assertEquals(Long.valueOf(1L), models.get(0).getId());
         assertEquals(Long.valueOf(3L), models.get(1).getId());
     }
 
     @Test
-    public void findByIdStringsManyTest() throws Exception {
+    public void findByIdStringsManyTest() {
         for (int i = 1; i <= 10; i++) {
             save(new SimpleAnnotatedModel());
         }
-        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, new String[]{"1", "3", "6", "10"});
+        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, "1", "3", "6", "10");
         assertEquals(4, models.size());
         assertEquals(Long.valueOf(1L), models.get(0).getId());
         assertEquals(Long.valueOf(3L), models.get(1).getId());
@@ -276,11 +275,11 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void findByIdStringsOrderTest() throws Exception {
+    public void findByIdStringsOrderTest() {
         for (int i = 1; i <= 10; i++) {
             save(new SimpleAnnotatedModel());
         }
-        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, new String[]{"10", "6", "3", "1"});
+        List<SimpleAnnotatedModel> models = findById(SimpleAnnotatedModel.class, "10", "6", "3", "1");
         assertEquals(4, models.size());
         // The order of the query doesn't matter
         assertEquals(Long.valueOf(1L), models.get(0).getId());
@@ -290,13 +289,13 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void findByIdNullTest() throws Exception {
+    public void findByIdNullTest() {
         save(new SimpleAnnotatedModel());
         assertNull(findById(SimpleAnnotatedModel.class, 2L));
     }
 
     @Test
-    public void findAllTest() throws Exception {
+    public void findAllTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -310,7 +309,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void findAsIteratorTest() throws Exception {
+    public void findAsIteratorTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -325,7 +324,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void findWithQueryAsIteratorTest() throws Exception {
+    public void findWithQueryAsIteratorTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleAnnotatedModel());
         }
@@ -342,7 +341,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test(expected=NoSuchElementException.class)
-    public void findAsIteratorOutOfBoundsTest() throws Exception {
+    public void findAsIteratorOutOfBoundsTest() {
         save(new SimpleAnnotatedModel());
         Iterator<SimpleAnnotatedModel> cursor = findAsIterator(SimpleAnnotatedModel.class,
                 "id = ?", "1");
@@ -355,7 +354,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test(expected=UnsupportedOperationException.class)
-    public void disallowRemoveCursorTest() throws Exception {
+    public void disallowRemoveCursorTest() {
         save(new SimpleAnnotatedModel());
         Iterator<SimpleAnnotatedModel> cursor = findAsIterator(SimpleAnnotatedModel.class, "id = ?", "1");
         assertTrue(cursor.hasNext());
@@ -367,7 +366,7 @@ public final class SimpleAnnotatedModelTests {
     }
 
     @Test
-    public void vacuumTest() throws Exception {
+    public void vacuumTest() {
         executeQuery("Vacuum");
     }
 }

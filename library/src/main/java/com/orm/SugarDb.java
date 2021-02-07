@@ -3,8 +3,6 @@ package com.orm;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import com.orm.dsl.BuildConfig;
 import com.orm.helper.ManifestHelper;
 import com.orm.util.SugarCursorFactory;
 

@@ -1,16 +1,15 @@
 package com.orm.helper;
 
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
-import com.orm.util.KeyWordUtil;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import static com.orm.helper.ManifestHelper.getDatabaseName;
@@ -22,8 +21,8 @@ import static com.orm.helper.ManifestHelper.DATABASE_DEFAULT_NAME;
 /**
  * @author jonatan.salas
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class ManifestHelperTest {
 
     @Test(expected = IllegalAccessException.class)
@@ -55,6 +54,6 @@ public final class ManifestHelperTest {
 
     @Test
     public void testGetDebugEnabled() {
-        assertEquals(false, isDebugEnabled());
+        assertFalse(isDebugEnabled());
     }
 }

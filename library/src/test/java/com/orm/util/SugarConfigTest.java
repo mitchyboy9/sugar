@@ -2,7 +2,7 @@ package com.orm.util;
 
 import com.orm.model.TestRecord;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 
@@ -28,6 +28,6 @@ public final class SugarConfigTest {
     @Test
     public void testClearCache() {
         SugarConfig.clearCache();
-        Assert.assertEquals(true, SugarConfig.fields.isEmpty());
+        Assert.assertTrue(SugarConfig.fields.isEmpty());
     }
 }

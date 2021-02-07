@@ -1,27 +1,25 @@
 package com.orm;
 
-import android.database.Cursor;
-
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
 import com.orm.model.TestRecord;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  * @author jonatan.salas
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SugarDataSourceTest {
     private SugarDataSource<TestRecord> recordSugarDataSource;
 
@@ -37,37 +35,19 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         assertNotNull(record.getId());
 
         recordSugarDataSource.delete(
                 record,
-                new SugarDataSource.SuccessCallback<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean result) {
-                        assertNotNull(result);
-                        assertEquals(true, result.booleanValue());
-                    }
+                result -> {
+                    assertNotNull(result);
+                    assertTrue(result);
                 },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -78,35 +58,17 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.findById(
                 record.getId(),
-                new SugarDataSource.SuccessCallback<TestRecord>() {
-                    @Override
-                    public void onSuccess(TestRecord result) {
-                        assertEquals(record.getId(), result.getId());
-                        assertEquals(record.getName(), result.getName());
-                    }
+                result -> {
+                    assertEquals(record.getId(), result.getId());
+                    assertEquals(record.getName(), result.getName());
                 },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -117,52 +79,24 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         record.setName("fulano");
         recordSugarDataSource.update(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        assertEquals(record.getId(), id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                id -> assertEquals(record.getId(), id),
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.findById(
                 record.getId(),
-                new SugarDataSource.SuccessCallback<TestRecord>() {
-                    @Override
-                    public void onSuccess(TestRecord result) {
-                        assertEquals(record.getId(), result.getId());
-                        assertEquals("fulano", result.getName());
-                    }
+                result -> {
+                    assertEquals(record.getId(), result.getId());
+                    assertEquals("fulano", result.getName());
                 },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -173,18 +107,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         final TestRecord record1 = new TestRecord();
@@ -192,18 +116,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record1,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record1.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record1::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         final TestRecord record2 = new TestRecord();
@@ -211,49 +125,19 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record2,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record2.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record2::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.listAll(
                 null,
-                new SugarDataSource.SuccessCallback<List<TestRecord>>() {
-                    @Override
-                    public void onSuccess(List<TestRecord> list) {
-                        assertEquals(3, list.size());
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                list -> assertEquals(3, list.size()),
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.deleteAll(
-                new SugarDataSource.SuccessCallback<Integer>() {
-                    @Override
-                    public void onSuccess(Integer count) {
-                        assertEquals(3, count.intValue());
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                count -> assertEquals(3, count.intValue()),
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -264,18 +148,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         final TestRecord record1 = new TestRecord();
@@ -283,18 +157,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record1,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record1.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record1::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
 
@@ -303,33 +167,13 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record2,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record2.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record2::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.count(
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long count) {
-                        assertEquals(3, count.longValue());
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                count -> assertEquals(3, count.longValue()),
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -340,18 +184,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         final TestRecord record1 = new TestRecord();
@@ -359,18 +193,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record1,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record1.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record1::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
 
@@ -379,34 +203,14 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.insert(
                 record2,
-                new SugarDataSource.SuccessCallback<Long>() {
-                    @Override
-                    public void onSuccess(Long id) {
-                        record2.setId(id);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                record2::setId,
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.listAll(
                 null,
-                new SugarDataSource.SuccessCallback<List<TestRecord>>() {
-                    @Override
-                    public void onSuccess(List<TestRecord> list) {
-                        assertEquals(3, list.size());
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                list -> assertEquals(3, list.size()),
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.query(
@@ -415,18 +219,8 @@ public final class SugarDataSourceTest {
                 null,
                 null,
                 null,
-                new SugarDataSource.SuccessCallback<Cursor>() {
-                    @Override
-                    public void onSuccess(Cursor cursor) {
-                        assertNotNull(cursor);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                Assert::assertNotNull,
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -448,42 +242,26 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.bulkInsert(
                 list,
-                new SugarDataSource.SuccessCallback<List<Long>>() {
-                    @Override
-                    public void onSuccess(List<Long> ids) {
-                        for (int i = 0; i < list.size(); i++) {
-                            list.get(i).setId(ids.get(i));
-                        }
+                ids -> {
+                    for (int i = 0; i < list.size(); i++) {
+                        list.get(i).setId(ids.get(i));
                     }
                 },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                e -> { throw new RuntimeException(e); }
         );
 
         recordSugarDataSource.listAll(
                 null,
-                new SugarDataSource.SuccessCallback<List<TestRecord>>() {
-                    @Override
-                    public void onSuccess(List<TestRecord> testRecords) {
-                        for (int i = 0; i < list.size(); i++) {
-                            TestRecord record1 = list.get(i);
-                            TestRecord record2 = testRecords.get(i);
+                testRecords -> {
+                    for (int i = 0; i < list.size(); i++) {
+                        TestRecord record11 = list.get(i);
+                        TestRecord record21 = testRecords.get(i);
 
-                            assertEquals(record1.getId(), record2.getId());
-                            assertEquals(record1.getName(), record2.getName());
-                        }
+                        assertEquals(record11.getId(), record21.getId());
+                        assertEquals(record11.getName(), record21.getName());
                     }
                 },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -494,18 +272,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.findById(
                 record.getId(),
-                new SugarDataSource.SuccessCallback<TestRecord>() {
-                    @Override
-                    public void onSuccess(TestRecord object) {
-                        assertNull(object);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        assertNotNull(e.getMessage());
-                    }
-                }
+                Assert::assertNull,
+                e -> { throw new RuntimeException(e); }
         );
     }
 
@@ -513,25 +281,14 @@ public final class SugarDataSourceTest {
     public void testNullListAll() {
         recordSugarDataSource.listAll(
                 null,
-                new SugarDataSource.SuccessCallback<List<TestRecord>>() {
-                    @Override
-                    public void onSuccess(List<TestRecord> object) {
-                        assertNull(object);
-                    }
-                },
-                new SugarDataSource.ErrorCallback() {
-                    @Override
-                    public void onError(Exception e) {
-                        assertNotNull(e.getMessage());
-                    }
-                }
+                Assert::assertNull,
+                e -> assertNotNull(e.getMessage())
         );
     }
 
     @Test(expected = IllegalArgumentException.class)
-    @SuppressWarnings("all")
     public void testNullConstructor() {
-        SugarDataSource<TestRecord> dataSource = SugarDataSource.getInstance(null);
+        SugarDataSource.getInstance(null);
     }
 
     @Test(expected = IllegalArgumentException.class)

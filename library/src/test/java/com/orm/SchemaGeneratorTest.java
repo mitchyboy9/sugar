@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
+import com.orm.helper.NamingHelper;
 import com.orm.model.AllAnotatedModel;
 import com.orm.model.EmptyModel;
 import com.orm.model.IntUniqueModel;
@@ -12,26 +12,25 @@ import com.orm.model.MultiColumnUniqueModel;
 import com.orm.model.StringFieldAnnotatedModel;
 import com.orm.model.StringFieldExtendedModel;
 import com.orm.model.StringFieldExtendedModelAnnotatedColumn;
-import com.orm.helper.NamingHelper;
 import com.orm.model.TestRecord;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SchemaGeneratorTest {
 
     @Test
-    public void testEmptyTableCreation() throws Exception {
+    public void testEmptyTableCreation() {
         SchemaGenerator schemaGenerator = SchemaGenerator.getInstance();
         String createSQL = schemaGenerator.createTableSQL(EmptyModel.class);
         assertEquals(
@@ -41,7 +40,7 @@ public final class SchemaGeneratorTest {
     }
 
     @Test
-    public void testSimpleColumnTableCreation() throws Exception {
+    public void testSimpleColumnTableCreation() {
         SchemaGenerator schemaGenerator = SchemaGenerator.getInstance();
         String createSQL = schemaGenerator.createTableSQL(StringFieldExtendedModel.class);
         assertEquals(

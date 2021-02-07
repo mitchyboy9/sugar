@@ -1,13 +1,12 @@
 package com.orm.record;
 
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
 import com.orm.helper.NamingHelper;
 import com.orm.model.SimpleExtendedModel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.lang.reflect.Field;
@@ -37,31 +36,31 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SimpleExtendedModelTests {
     private String id = "id = ?";
 
     @Test
-    public void emptyDatabaseTest() throws Exception {
+    public void emptyDatabaseTest() {
         assertEquals(0L, count(SimpleExtendedModel.class));
     }
 
     @Test
-    public void oneSaveTest() throws Exception {
+    public void oneSaveTest() {
         save(new SimpleExtendedModel());
         assertEquals(1L, count(SimpleExtendedModel.class));
     }
 
     @Test
-    public void twoSaveTest() throws Exception {
+    public void twoSaveTest() {
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
         assertEquals(2L, count(SimpleExtendedModel.class));
     }
 
     @Test
-    public void manySaveTest() throws Exception {
+    public void manySaveTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleExtendedModel());
         }
@@ -70,42 +69,42 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void defaultIdTest() throws Exception {
+    public void defaultIdTest() {
         assertEquals(1L, save(new SimpleExtendedModel()));
     }
 
     @Test
-    public void whereCountTest() throws Exception {
+    public void whereCountTest() {
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
-        assertEquals(1L, count(SimpleExtendedModel.class, id, new String[]{"1"}));
+        assertEquals(1L, count(SimpleExtendedModel.class, id, "1"));
     }
 
     @Test
-    public void whereNoCountTest() throws Exception {
-        assertEquals(0L, count(SimpleExtendedModel.class, id, new String[]{"1"}));
+    public void whereNoCountTest() {
+        assertEquals(0L, count(SimpleExtendedModel.class, id, "1"));
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
-        assertEquals(0L, count(SimpleExtendedModel.class, id, new String[]{"3"}));
-        assertEquals(0L, count(SimpleExtendedModel.class, id, new String[]{"a"}));
+        assertEquals(0L, count(SimpleExtendedModel.class, id, "3"));
+        assertEquals(0L, count(SimpleExtendedModel.class, id, "a"));
     }
 
     @Test
-    public void whereBrokenCountTest() throws Exception {
+    public void whereBrokenCountTest() {
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
-        assertEquals(-1L, count(SimpleExtendedModel.class, "di = ?", new String[]{"1"}));
+        assertEquals(-1L, count(SimpleExtendedModel.class, "di = ?", "1"));
     }
 
     @Test
-    public void saveMethodTest() throws Exception {
+    public void saveMethodTest() {
         SimpleExtendedModel model = new SimpleExtendedModel();
         model.save();
-        assertEquals(-1L, count(SimpleExtendedModel.class, "di = ?", new String[]{"1"}));
+        assertEquals(-1L, count(SimpleExtendedModel.class, "di = ?", "1"));
     }
 
     @Test
-    public void deleteTest() throws Exception {
+    public void deleteTest() {
         SimpleExtendedModel model = new SimpleExtendedModel();
         save(model);
         assertEquals(1L, count(SimpleExtendedModel.class));
@@ -114,7 +113,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void deleteUnsavedTest() throws Exception {
+    public void deleteUnsavedTest() {
         SimpleExtendedModel model = new SimpleExtendedModel();
         assertEquals(0L, count(SimpleExtendedModel.class));
         assertFalse(delete(model));
@@ -134,7 +133,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void deleteAllTest() throws Exception {
+    public void deleteAllTest() {
         int elementNumber = 100;
         for (int i = 1; i <= elementNumber; i++) {
             save(new SimpleExtendedModel());
@@ -145,7 +144,7 @@ public final class SimpleExtendedModelTests {
 
     @Test
     @SuppressWarnings("all")
-    public void deleteAllWhereTest() throws Exception {
+    public void deleteAllWhereTest() {
         int elementNumber = 100;
         for (int i = 1; i <= elementNumber; i++) {
             save(new SimpleExtendedModel());
@@ -155,7 +154,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void deleteInTransactionFewTest() throws Exception {
+    public void deleteInTransactionFewTest() {
         SimpleExtendedModel first = new SimpleExtendedModel();
         SimpleExtendedModel second = new SimpleExtendedModel();
         SimpleExtendedModel third = new SimpleExtendedModel();
@@ -168,7 +167,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void deleteInTransactionManyTest() throws Exception {
+    public void deleteInTransactionManyTest() {
         long elementNumber = 100;
         List<SimpleExtendedModel> models = new ArrayList<>();
         for (int i = 1; i <= elementNumber; i++) {
@@ -185,13 +184,13 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void saveInTransactionTest() throws Exception {
+    public void saveInTransactionTest() {
         saveInTx(new SimpleExtendedModel(), new SimpleExtendedModel());
         assertEquals(2L, count(SimpleExtendedModel.class));
     }
 
     @Test
-    public void listAllTest() throws Exception {
+    public void listAllTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleExtendedModel());
         }
@@ -203,7 +202,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findTest() throws Exception {
+    public void findTest() {
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
         List<SimpleExtendedModel> models = find(SimpleExtendedModel.class, "id = ?", "2");
@@ -212,7 +211,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findWithQueryTest() throws Exception {
+    public void findWithQueryTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleExtendedModel());
         }
@@ -226,38 +225,38 @@ public final class SimpleExtendedModelTests {
 
     @Test
     @SuppressWarnings("all")
-    public void findByIdTest() throws Exception {
+    public void findByIdTest() {
         save(new SimpleExtendedModel());
         assertEquals(Long.valueOf(1L), findById(SimpleExtendedModel.class, 1L).getId());
     }
 
     @Test
-    public void findByIdIntegerTest() throws Exception {
+    public void findByIdIntegerTest() {
         save(new SimpleExtendedModel());
         assertEquals(Long.valueOf(1L), findById(SimpleExtendedModel.class, 1).getId());
     }
 
     @Test
-    public void findByIdStringsNullTest() throws Exception {
+    public void findByIdStringsNullTest() {
         save(new SimpleExtendedModel());
         assertEquals(0, findById(SimpleExtendedModel.class, new String[]{""}).size());
     }
 
     @Test
-    public void findByIdStringsOneTest() throws Exception {
+    public void findByIdStringsOneTest() {
         save(new SimpleExtendedModel());
-        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, new String[]{"1"});
+        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, "1");
         assertEquals(1, models.size());
         assertEquals(Long.valueOf(1L), models.get(0).getId());
     }
 
     @Test
-    public void findByIdStringsTwoTest() throws Exception {
+    public void findByIdStringsTwoTest() {
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
         save(new SimpleExtendedModel());
 
-        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, new String[]{"1", "3"});
+        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, "1", "3");
 
         assertEquals(2, models.size());
         assertEquals(Long.valueOf(1L), models.get(0).getId());
@@ -265,12 +264,12 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findByIdStringsManyTest() throws Exception {
+    public void findByIdStringsManyTest() {
         for (int i = 1; i <= 10; i++) {
             save(new SimpleExtendedModel());
         }
 
-        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, new String[]{"1", "3", "6", "10"});
+        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, "1", "3", "6", "10");
 
         assertEquals(4, models.size());
         assertEquals(Long.valueOf(1L), models.get(0).getId());
@@ -280,12 +279,12 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findByIdStringsOrderTest() throws Exception {
+    public void findByIdStringsOrderTest() {
         for (int i = 1; i <= 10; i++) {
             save(new SimpleExtendedModel());
         }
 
-        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, new String[]{"10", "6", "3", "1"});
+        List<SimpleExtendedModel> models = findById(SimpleExtendedModel.class, "10", "6", "3", "1");
 
         assertEquals(4, models.size());
         // The order of the query doesn't matter
@@ -296,13 +295,13 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findByIdNullTest() throws Exception {
+    public void findByIdNullTest() {
         save(new SimpleExtendedModel());
         assertNull(findById(SimpleExtendedModel.class, 2L));
     }
 
     @Test
-    public void findAllTest() throws Exception {
+    public void findAllTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleExtendedModel());
         }
@@ -318,7 +317,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findAsIteratorTest() throws Exception {
+    public void findAsIteratorTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleExtendedModel());
         }
@@ -334,7 +333,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void findWithQueryAsIteratorTest() throws Exception {
+    public void findWithQueryAsIteratorTest() {
         for (int i = 1; i <= 100; i++) {
             save(new SimpleExtendedModel());
         }
@@ -352,7 +351,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test(expected=NoSuchElementException.class)
-    public void findAsIteratorOutOfBoundsTest() throws Exception {
+    public void findAsIteratorOutOfBoundsTest() {
         save(new SimpleExtendedModel());
         Iterator<SimpleExtendedModel> cursor = findAsIterator(SimpleExtendedModel.class, id, "1");
         assertTrue(cursor.hasNext());
@@ -364,7 +363,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test(expected=UnsupportedOperationException.class)
-    public void disallowRemoveCursorTest() throws Exception {
+    public void disallowRemoveCursorTest() {
         save(new SimpleExtendedModel());
         Iterator<SimpleExtendedModel> cursor = findAsIterator(SimpleExtendedModel.class, id, "1");
         assertTrue(cursor.hasNext());
@@ -376,7 +375,7 @@ public final class SimpleExtendedModelTests {
     }
 
     @Test
-    public void vacuumTest() throws Exception {
+    public void vacuumTest() {
         executeQuery("Vacuum");
     }
 }

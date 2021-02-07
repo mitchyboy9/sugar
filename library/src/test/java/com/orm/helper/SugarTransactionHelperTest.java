@@ -2,28 +2,26 @@ package com.orm.helper;
 
 import com.orm.app.ClientApp;
 import com.orm.SugarContext;
-import com.orm.dsl.BuildConfig;
-import com.orm.helper.SugarTransactionHelper;
 import com.orm.model.TestRecord;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertNull;
 
 /**
  * @author jonatan.salas
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SugarTransactionHelperTest {
     private List<TestRecord> recordList = new ArrayList<>();
     private TestRecord record1 = new TestRecord();
@@ -32,7 +30,7 @@ public final class SugarTransactionHelperTest {
 
     @Before
     public void setUp() {
-        SugarContext.init(RuntimeEnvironment.application);
+        SugarContext.init(getApplicationContext());
 
         record1.setId(1L);
         record1.setName("lala");
@@ -56,20 +54,17 @@ public final class SugarTransactionHelperTest {
 
     @Test
     public void testDoInTransaction() {
-        SugarTransactionHelper.doInTransaction(new SugarTransactionHelper.Callback() {
-            @Override
-            public void manipulateInTransaction() {
-                for (TestRecord record: recordList) {
-                    TestRecord.save(record);
-                }
+        SugarTransactionHelper.doInTransaction(() -> {
+            for (TestRecord record: recordList) {
+                TestRecord.save(record);
             }
         });
 
         final List<TestRecord> results = TestRecord.listAll(TestRecord.class);
 
-        assertEquals(true, inList(results, record1));
-        assertEquals(true, inList(results, record2));
-        assertEquals(true, inList(results, record3));
+        assertTrue(inList(results, record1));
+        assertTrue(inList(results, record2));
+        assertTrue(inList(results, record3));
     }
 
     private boolean inList(List<TestRecord> list, TestRecord testRecord) {

@@ -44,12 +44,10 @@ public class SugarRecord {
         return new SugarCursor(raw);
     }
 
-    @SuppressWarnings("deprecation")
     public static <T> void saveInTx(T... objects) {
         saveInTx(Arrays.asList(objects));
     }
 
-    @SuppressWarnings("deprecation")
     public static <T> void saveInTx(Collection<T> objects) {
         SQLiteDatabase sqLiteDatabase = getSugarDataBase();
         try {
@@ -69,12 +67,10 @@ public class SugarRecord {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static <T> void updateInTx(T... objects) {
         updateInTx(Arrays.asList(objects));
     }
 
-    @SuppressWarnings("deprecation")
     public static <T> void updateInTx(Collection<T> objects) {
         SQLiteDatabase sqLiteDatabase = getSugarDataBase();
         try {
@@ -94,12 +90,10 @@ public class SugarRecord {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static <T> int deleteInTx(T... objects) {
         return deleteInTx(Arrays.asList(objects));
     }
 
-    @SuppressWarnings("deprecation")
     public static <T> int deleteInTx(Collection<T> objects) {
         SQLiteDatabase sqLiteDatabase = getSugarDataBase();
         int deletedRows = 0;
@@ -200,7 +194,7 @@ public class SugarRecord {
 
     public static <T> List<T> find(Class<T> type, String whereClause, String[] whereArgs, String groupBy, String orderBy, String limit) {
 
-        String args[];
+        String[] args;
         args = (whereArgs == null) ? null : replaceArgs(whereArgs);
 
         Cursor cursor = getSugarDataBase().query(NamingHelper.toTableName(type), null, whereClause, args,
@@ -210,7 +204,7 @@ public class SugarRecord {
     }
 
     public static <T> List<T> findOneToMany(Class<T> type, String relationFieldName, Object relationObject, Long relationObjectId) {
-        String args[] = { String.valueOf(relationObjectId) };
+        String[] args = { String.valueOf(relationObjectId) };
         String whereClause = NamingHelper.toSQLNameDefault(relationFieldName) + " = ?";
 
         Cursor cursor = getSugarDataBase().query(NamingHelper.toTableName(type), null, whereClause, args,
@@ -282,7 +276,7 @@ public class SugarRecord {
     }
 
     public static <T> long sum(Class<T> type, String field) {
-        return sum(type, field, null, null);
+        return sum(type, field, null);
     }
 
     public static <T> long sum(Class<T> type, String field, String whereClause, String... whereArgs) {
@@ -388,7 +382,7 @@ public class SugarRecord {
             }
         }
 
-        String[] whereArgsArray = whereArgs.toArray(new String[whereArgs.size()]);
+        String[] whereArgsArray = whereArgs.toArray(new String[0]);
         // Get SugarRecord based on Unique values
         long rowsEffected = db.update(NamingHelper.toTableName(object.getClass()), values, whereClause.toString(), whereArgsArray);
 
@@ -467,7 +461,6 @@ public class SugarRecord {
         return update(getSugarDataBase(), this);
     }
 
-    @SuppressWarnings("unchecked")
     void inflate(Cursor cursor) {
         new EntityInflater()
                 .withCursor(cursor)

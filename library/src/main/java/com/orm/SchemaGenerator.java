@@ -9,7 +9,6 @@ import com.orm.annotation.Column;
 import com.orm.annotation.MultiUnique;
 import com.orm.annotation.NotNull;
 import com.orm.annotation.Unique;
-import com.orm.dsl.BuildConfig;
 import com.orm.helper.ManifestHelper;
 import com.orm.util.KeyWordUtil;
 import com.orm.util.MigrationFileParser;
@@ -71,6 +70,7 @@ public class SchemaGenerator {
             } else {
                 addColumns(domain, sqLiteDatabase);
             }
+            c.close();
         }
         executeSugarUpgrade(sqLiteDatabase, oldVersion, newVersion);
     }
@@ -107,7 +107,7 @@ public class SchemaGenerator {
                 }
 
                 try {
-                    int version = Integer.valueOf(file.replace(".sql", ""));
+                    int version = Integer.parseInt(file.replace(".sql", ""));
 
                     if ((version > oldVersion) && (version <= newVersion)) {
                         executeScript(db,"sugar_upgrades/" ,file);

@@ -1,14 +1,13 @@
 package com.orm.record;
 
 import com.orm.app.ClientApp;
-import com.orm.dsl.BuildConfig;
 import com.orm.model.NestedMixedABModel;
 import com.orm.model.RelationshipMixedBModel;
 import com.orm.model.SimpleExtendedModel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
@@ -19,19 +18,19 @@ import static com.orm.SugarRecord.listAll;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 18, constants = BuildConfig.class, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public class NestedMixedABTests {
 
     @Test
-    public void emptyDatabaseTest() throws Exception {
+    public void emptyDatabaseTest() {
         assertEquals(0L, count(NestedMixedABModel.class));
         assertEquals(0L, count(RelationshipMixedBModel.class));
         assertEquals(0L, count(SimpleExtendedModel.class));
     }
 
     @Test
-    public void oneSaveTest() throws Exception {
+    public void oneSaveTest() {
         SimpleExtendedModel simple = new SimpleExtendedModel();
         save(simple);
         RelationshipMixedBModel nested = new RelationshipMixedBModel(simple);
@@ -45,7 +44,7 @@ public class NestedMixedABTests {
     }
 
     @Test
-    public void twoSameSaveTest() throws Exception {
+    public void twoSameSaveTest() {
         SimpleExtendedModel simple = new SimpleExtendedModel();
         save(simple);
         RelationshipMixedBModel nested = new RelationshipMixedBModel(simple);
@@ -60,7 +59,7 @@ public class NestedMixedABTests {
     }
 
     @Test
-    public void twoDifferentSaveTest() throws Exception {
+    public void twoDifferentSaveTest() {
         SimpleExtendedModel simple = new SimpleExtendedModel();
         save(simple);
         SimpleExtendedModel anotherSimple = new SimpleExtendedModel();
@@ -79,7 +78,7 @@ public class NestedMixedABTests {
     }
 
     @Test
-    public void manySameSaveTest() throws Exception {
+    public void manySameSaveTest() {
         SimpleExtendedModel simple = new SimpleExtendedModel();
         save(simple);
         RelationshipMixedBModel nested = new RelationshipMixedBModel(simple);
@@ -95,7 +94,7 @@ public class NestedMixedABTests {
     }
 
     @Test
-    public void manyDifferentSaveTest() throws Exception {
+    public void manyDifferentSaveTest() {
         for (int i = 1; i <= 100; i++) {
             SimpleExtendedModel simple = new SimpleExtendedModel();
             save(simple);
@@ -110,7 +109,7 @@ public class NestedMixedABTests {
     }
 
     @Test
-    public void listAllSameTest() throws Exception {
+    public void listAllSameTest() {
         SimpleExtendedModel simple = new SimpleExtendedModel();
         save(simple);
         RelationshipMixedBModel nested = new RelationshipMixedBModel(simple);
@@ -130,7 +129,7 @@ public class NestedMixedABTests {
     }
 
     @Test
-    public void listAllDifferentTest() throws Exception {
+    public void listAllDifferentTest() {
         for (int i = 1; i <= 100; i++) {
             SimpleExtendedModel simple = new SimpleExtendedModel();
             save(simple);

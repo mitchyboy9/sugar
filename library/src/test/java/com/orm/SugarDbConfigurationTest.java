@@ -1,23 +1,21 @@
 package com.orm;
 
-import com.orm.dsl.BuildConfig;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
  * @author jonatan.salas
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(sdk = 16, constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 16)
 public final class SugarDbConfigurationTest {
 
     @Test
@@ -27,7 +25,7 @@ public final class SugarDbConfigurationTest {
                 .setMaxSize(1024L)
                 .setPageSize(400L);
 
-        SugarContext.init(RuntimeEnvironment.application, configuration);
+        SugarContext.init(getApplicationContext(), configuration);
 
         final SugarDbConfiguration config = SugarContext.getDbConfiguration();
 
@@ -38,7 +36,7 @@ public final class SugarDbConfigurationTest {
 
     @Test
     public void testNullConfiguration() {
-        SugarContext.init(RuntimeEnvironment.application);
+        SugarContext.init(getApplicationContext());
         assertNull(SugarContext.getDbConfiguration());
     }
 
