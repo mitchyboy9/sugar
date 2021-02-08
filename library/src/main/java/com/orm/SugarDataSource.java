@@ -151,7 +151,7 @@ public final class SugarDataSource<T> {
             object = future.get();
 
             if (null == object) {
-                errorCallback.onError(new Exception("The object with " + id.toString() + "doesn't exist in database"));
+                errorCallback.onError(new Exception("The object with id " + id.toString() + " doesn't exist in database"));
             } else {
                 successCallback.onSuccess(object);
             }

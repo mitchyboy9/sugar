@@ -272,8 +272,8 @@ public final class SugarDataSourceTest {
 
         recordSugarDataSource.findById(
                 record.getId(),
-                Assert::assertNull,
-                e -> { throw new RuntimeException(e); }
+                object -> fail("errorCallback should have been called in this situation"),
+                e -> assertEquals("The object with id 0 doesn't exist in database", e.getMessage())
         );
     }
 
