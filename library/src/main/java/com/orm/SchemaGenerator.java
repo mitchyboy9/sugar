@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static com.orm.util.ReflectionUtil.getDomainClasses;
 import static com.orm.util.ContextUtil.getAssets;
@@ -44,7 +45,7 @@ public class SchemaGenerator {
     }
 
     public void createDatabase(SQLiteDatabase sqLiteDatabase) {
-        List<Class> domainClasses = getDomainClasses();
+        Set<Class> domainClasses = getDomainClasses();
         for (Class domain : domainClasses) {
             createTable(domain, sqLiteDatabase);
             afterTableCreated(domain,sqLiteDatabase);
@@ -59,7 +60,7 @@ public class SchemaGenerator {
     }
 
     public void doUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        List<Class> domainClasses = getDomainClasses();
+        Set<Class> domainClasses = getDomainClasses();
         String sql = "select count(*) from sqlite_master where type='table' and name='%s';";
 
         for (Class domain : domainClasses) {
@@ -89,7 +90,7 @@ public class SchemaGenerator {
 
 
     public void deleteTables(SQLiteDatabase sqLiteDatabase) {
-        List<Class> tables = getDomainClasses();
+        Set<Class> tables = getDomainClasses();
         for (Class table : tables) {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + NamingHelper.toTableName(table));
         }

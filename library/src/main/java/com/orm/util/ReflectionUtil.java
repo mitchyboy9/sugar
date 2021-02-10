@@ -25,8 +25,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class ReflectionUtil {
 
@@ -267,8 +269,8 @@ public final class ReflectionUtil {
         }
     }
 
-    public static List<Class> getDomainClasses() {
-        List<Class> domainClasses = new ArrayList<>();
+    public static Set<Class> getDomainClasses() {
+        Set<Class> domainClasses = new HashSet<>();
         try {
             for (String className : getAllClasses()) {
                 Class domainClass = getDomainClass(className);

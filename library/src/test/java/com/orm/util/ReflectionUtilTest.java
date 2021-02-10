@@ -20,6 +20,7 @@ import org.robolectric.annotation.Config;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author jonatan.salas
@@ -72,7 +73,7 @@ public final class ReflectionUtilTest {
 
     @Test
     public void testGetAllClasses() {
-        List<Class> classes = ReflectionUtil.getDomainClasses();
+        Set<Class> classes = ReflectionUtil.getDomainClasses();
         Assert.assertEquals(46, classes.size());
     }
 
