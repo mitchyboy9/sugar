@@ -292,7 +292,6 @@ public final class SugarDataSourceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    @SuppressWarnings("all")
     public void testCheckNotNull() {
         TestRecord record = null;
         recordSugarDataSource.checkNotNull(record);
