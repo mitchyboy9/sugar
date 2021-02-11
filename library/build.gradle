@@ -36,6 +36,6 @@ task libraryJar(type: Jar) {
     dependsOn 'assembleRelease'
     from android.sourceSets.main.java.srcDirs,
          ['build/intermediates/classes/release/'] // Add the release classes into the jar
-    baseName 'sugar'
+    getArchiveBaseName().set('sugar')
 }
 
