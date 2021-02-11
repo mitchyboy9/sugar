@@ -39,7 +39,7 @@ subprojects { proj ->
     apply plugin: 'jacoco'
 
     jacoco {
-        version "0.7.1.201405082137"
+        version "0.8.6"
     }
 
     task jacocoTestReport(type: JacocoReport) {
@@ -66,11 +66,11 @@ subprojects { proj ->
 }
 
 jacoco {
-    toolVersion "0.7.1.201405082137"
+    toolVersion "0.8.6"
 }
 
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
-    group = "Reporting"
+    group = "RFeporting"
     description = 'Generates an aggregate report from all subprojects'
     dependsOn(subprojects.jacocoTestReport)
 
