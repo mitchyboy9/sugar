@@ -47,9 +47,8 @@ public final class MultiDexHelper {
      *
      * @return all the dex path, including the ones in the newly added instant-run folder
      * @throws PackageManager.NameNotFoundException
-     * @throws IOException
      */
-    public static List<String> getSourcePaths() throws PackageManager.NameNotFoundException, IOException {
+    public static List<String> getSourcePaths() throws PackageManager.NameNotFoundException {
         ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), 0);
         File sourceApk = new File(applicationInfo.sourceDir);
         File dexDir = new File(applicationInfo.dataDir, SECONDARY_FOLDER_NAME);
@@ -104,6 +103,7 @@ public final class MultiDexHelper {
                 while (dexEntries.hasMoreElements()) {
                     classNames.add(dexEntries.nextElement());
                 }
+                dexfile.close();
             } catch (IOException e) {
                 throw new IOException("Error at loading dex file '" + path + "'");
             }

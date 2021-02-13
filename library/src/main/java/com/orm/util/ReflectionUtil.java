@@ -340,9 +340,6 @@ public final class ReflectionUtil {
                 }
             }
         }
-//        } finally {
-//            if (null != dexfile) dexfile.close();
-//        }
 
         return classNames;
     }

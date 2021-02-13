@@ -31,8 +31,7 @@ public final class ReflectionUtilTest {
 
     @Test(expected = IllegalAccessException.class)
     public void testPrivateConstructor() throws Exception {
-        ReflectionUtil reflectionUtil = ReflectionUtil.class.getDeclaredConstructor().newInstance();
-        Assert.assertNull(reflectionUtil);
+        ReflectionUtil.class.getDeclaredConstructor().newInstance();
     }
 
     @Test
