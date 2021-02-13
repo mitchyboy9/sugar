@@ -7,30 +7,24 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
+import static com.orm.helper.ManifestHelper.DATABASE_DEFAULT_NAME;
 import static com.orm.helper.ManifestHelper.getDatabaseName;
 import static com.orm.helper.ManifestHelper.getDatabaseVersion;
 import static com.orm.helper.ManifestHelper.getDomainPackageName;
 import static com.orm.helper.ManifestHelper.isDebugEnabled;
-import static com.orm.helper.ManifestHelper.DATABASE_DEFAULT_NAME;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-/**
- * @author jonatan.salas
- */
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 29, application = SugarApp.class)
 public final class ManifestHelperTest {
 
     @Test(expected = IllegalAccessException.class)
     public void testPrivateConstructor() throws Exception {
-        ManifestHelper helper = ManifestHelper.class.getDeclaredConstructor().newInstance();
-        assertNull(helper);
+        ManifestHelper.class.getDeclaredConstructor().newInstance();
     }
-
 
     @Test
     public void testGetDbName() {
@@ -48,8 +42,9 @@ public final class ManifestHelperTest {
     }
 
     @Test
-    public void testGetDomainPackageName() {
-        assertNotNull(getDomainPackageName());
+    @Config(manifest = Config.NONE)
+    public void getDomainPackageNameWithNoMetaDataSetInManifestReturnsEmptyString() {
+        assertThat(getDomainPackageName(), is(""));
     }
 
     @Test
