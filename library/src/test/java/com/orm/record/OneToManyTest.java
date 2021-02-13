@@ -1,6 +1,6 @@
 package com.orm.record;
 
-import com.orm.app.ClientApp;
+import com.orm.SugarApp;
 import com.orm.model.onetomany.OneToManyRelationModel;
 import com.orm.model.onetomany.OneToManyModel;
 import com.orm.model.onetomany.WithoutOneToManyAnnotationModel;
@@ -22,7 +22,7 @@ import static com.orm.SugarRecord.save;
  */
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public class OneToManyTest {
     @Test
     public void shouldSaveWithOneToManyRelation() {

@@ -2,7 +2,7 @@ package com.orm;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.orm.app.ClientApp;
+import com.orm.SugarApp;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
  * @author jonatan.salas
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SugarDbTest {
     private final SugarDb sugarDb = SugarDb.getInstance();
 

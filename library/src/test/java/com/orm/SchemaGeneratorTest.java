@@ -3,7 +3,7 @@ package com.orm;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.orm.app.ClientApp;
+import com.orm.SugarApp;
 import com.orm.helper.NamingHelper;
 import com.orm.model.AllAnotatedModel;
 import com.orm.model.EmptyModel;
@@ -26,7 +26,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class SchemaGeneratorTest {
 
     @Test

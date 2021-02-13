@@ -1,6 +1,6 @@
 package com.orm.helper;
 
-import com.orm.app.ClientApp;
+import com.orm.SugarApp;
 import com.orm.model.TestRecord;
 import com.orm.util.ReflectionUtil;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static com.orm.helper.NamingHelper.*;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class NamingHelperTest {
 
     @Test(expected = IllegalAccessException.class)

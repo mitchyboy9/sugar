@@ -1,6 +1,6 @@
 package com.orm.record;
 
-import com.orm.app.ClientApp;
+import com.orm.SugarApp;
 import com.orm.model.RelationshipAnnotatedModel;
 import com.orm.model.SimpleAnnotatedModel;
 
@@ -18,7 +18,7 @@ import static com.orm.SugarRecord.listAll;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class RelationshipAnnotatedTests {
 
     @Test

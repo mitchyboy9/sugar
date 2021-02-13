@@ -5,7 +5,7 @@ import android.database.Cursor;
 
 import com.orm.SugarContext;
 import com.orm.SugarRecord;
-import com.orm.app.ClientApp;
+import com.orm.SugarApp;
 import com.orm.model.TestRecord;
 import com.orm.model.foreignnull.OriginRecord;
 import com.orm.query.Select;
@@ -26,7 +26,7 @@ import java.util.Set;
  * @author jonatan.salas
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, application = ClientApp.class, packageName = "com.orm.model", manifest = Config.NONE)
+@Config(sdk = 18, application = SugarApp.class, packageName = "com.orm.model", manifest = Config.NONE)
 public final class ReflectionUtilTest {
 
     @Test(expected = IllegalAccessException.class)
