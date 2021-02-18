@@ -72,7 +72,7 @@ public final class ReflectionUtilTest {
 
     @Test
     public void testGetAllClasses() {
-        Set<Class> classes = ReflectionUtil.getDomainClasses();
+        Set<Class<?>> classes = ReflectionUtil.getDomainClasses();
         Assert.assertEquals(46, classes.size());
     }
 

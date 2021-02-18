@@ -1,7 +1,6 @@
 package com.orm.util;
 
 import android.content.ContentValues;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -9,22 +8,19 @@ import com.orm.SugarRecord;
 import com.orm.annotation.Ignore;
 import com.orm.annotation.Table;
 import com.orm.helper.ManifestHelper;
-import com.orm.helper.MultiDexHelper;
 import com.orm.helper.NamingHelper;
+import com.orm.util.classdiscovery.DexClassScanner;
+import com.orm.util.classdiscovery.ResourcesClassScanner;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +28,6 @@ import java.util.Set;
 
 public final class ReflectionUtil {
 
-    //Prevent instantiation..
     private ReflectionUtil() { }
 
     public static List<Field> getTableFields(Class table) {
@@ -80,8 +75,8 @@ public final class ReflectionUtil {
                 try {
                     field = columnType.getDeclaredField("id");
                     field.setAccessible(true);
-                    if(columnValue != null) {
-                        values.put(columnName,String.valueOf(field.get(columnValue)));
+                    if (columnValue != null) {
+                        values.put(columnName, String.valueOf(field.get(columnValue)));
                     } else {
                         values.putNull(columnName);
                     }
@@ -269,104 +264,56 @@ public final class ReflectionUtil {
         }
     }
 
-    public static Set<Class> getDomainClasses() {
-        Set<Class> domainClasses = new HashSet<>();
+    public static Set<Class<?>> getDomainClasses() {
+        String domainPackageName = ManifestHelper.getDomainPackageName();
+
+        Set<String> allCandidateClasses = new HashSet<>();
         try {
-            for (String className : getAllClasses()) {
-                Class domainClass = getDomainClass(className);
-                if (domainClass != null) domainClasses.add(domainClass);
-            }
-        } catch (IOException | PackageManager.NameNotFoundException  e) {
-            if (ManifestHelper.isDebugEnabled()) {
-                Log.e("Sugar", e.getMessage());
-            }
-        }
-
-        return domainClasses;
-    }
-
-
-    private static Class getDomainClass(String className) {
-        Class<?> discoveredClass = null;
-        try {
-            discoveredClass = Class.forName(className, true, Thread.currentThread().getContextClassLoader());
-        } catch (Throwable e) {
-            String error = (e.getMessage() == null) ? "getDomainClass " + className + " error" : e.getMessage();
-            if (ManifestHelper.isDebugEnabled()) {
-                Log.e("Sugar", error);
-            }
-        }
-
-        if ((discoveredClass != null) &&
-                ((SugarRecord.class.isAssignableFrom(discoveredClass) &&
-                        !SugarRecord.class.equals(discoveredClass)) ||
-                        discoveredClass.isAnnotationPresent(Table.class)) &&
-                !Modifier.isAbstract(discoveredClass.getModifiers())) {
-
-            if (ManifestHelper.isDebugEnabled()) {
-                Log.i("Sugar", "domain class : " + discoveredClass.getSimpleName());
-            }
-            return discoveredClass;
-
-        } else {
-            return null;
-        }
-    }
-
-
-    private static List<String> getAllClasses() throws PackageManager.NameNotFoundException, IOException {
-        String packageName = ManifestHelper.getDomainPackageName();
-        List<String> classNames = new ArrayList<>();
-        try {
-            List<String> allClasses = MultiDexHelper.getAllClasses();
-            for (String classString : allClasses) {
-                if (classString.startsWith(packageName)) classNames.add(classString);
-            }
+            allCandidateClasses.addAll(new DexClassScanner().getAllFullyQualifiedClassNamesInPackage(domainPackageName));
         } catch (NullPointerException e) {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Enumeration<URL> urls = classLoader.getResources("");
-            while (urls.hasMoreElements()) {
-                List<String> fileNames = new ArrayList<>();
-                String classDirectoryName = urls.nextElement().getFile();
-                if (classDirectoryName.contains("bin") || classDirectoryName.contains("classes")
-                        || classDirectoryName.contains("retrolambda")) {
-                    File classDirectory = new File(classDirectoryName);
-                    for (File filePath : classDirectory.listFiles()) {
-                        populateFiles(filePath, fileNames, "");
-                    }
-                    for (String fileName : fileNames) {
-                        if (fileName.startsWith(packageName)) classNames.add(fileName);
-                    }
+            allCandidateClasses.addAll(getAllClassesRunningWithRobolectric(domainPackageName));
+        }
+
+        return getAllClassesThatRepresentSugarTables(allCandidateClasses);
+    }
+
+    private static Set<String> getAllClassesRunningWithRobolectric(String domainPackageName) {
+        ResourcesClassScanner resourcesClassScanner = new ResourcesClassScanner(Thread.currentThread().getContextClassLoader());
+        return resourcesClassScanner.getAllFullyQualifiedClassNamesInPackage(domainPackageName);
+    }
+
+    private static Set<Class<?>> getAllClassesThatRepresentSugarTables(Set<String> candidateQualifiedClassNames) {
+        Set<Class<?>> tableClasses = new HashSet<>();
+
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+
+        for (String candidateClassName : candidateQualifiedClassNames) {
+            Class<?> discoveredClass = null;
+            try {
+                discoveredClass = Class.forName(candidateClassName, true, contextClassLoader);
+            } catch (Throwable e) {
+                if (ManifestHelper.isDebugEnabled()) {
+                    Log.e("Sugar", "Unable to load class: " + candidateClassName, e);
                 }
+            }
+
+            if (discoveredClass != null &&
+                    isSugarRecordDescendantOrIsAnnotated(discoveredClass) &&
+                    !Modifier.isAbstract(discoveredClass.getModifiers())) {
+
+                if (ManifestHelper.isDebugEnabled()) {
+                    Log.i("Sugar", "Discovered domain class : " + candidateClassName);
+                }
+                tableClasses.add(discoveredClass);
             }
         }
 
-        return classNames;
+        return tableClasses;
     }
 
-    private static void populateFiles(File path, List<String> fileNames, String parent) {
-        if (path.isDirectory()) {
-            for (File newPath : path.listFiles()) {
-                if ("".equals(parent)) {
-                    populateFiles(newPath, fileNames, path.getName());
-                } else {
-                    populateFiles(newPath, fileNames, parent + "." + path.getName());
-                }
-            }
-        } else {
-            String pathName = path.getName();
-            String classSuffix = ".class";
-            pathName = pathName.endsWith(classSuffix) ?
-                    pathName.substring(0, pathName.length() - classSuffix.length()) : pathName;
-            if ("".equals(parent)) {
-                fileNames.add(pathName);
-            } else {
-                fileNames.add(parent + "." + pathName);
-            }
-        }
-    }
-
-    private static String getSourcePath() throws PackageManager.NameNotFoundException {
-        return ContextUtil.getPackageManager().getApplicationInfo(ContextUtil.getPackageName(), 0).sourceDir;
+    private static boolean isSugarRecordDescendantOrIsAnnotated(Class<?> discoveredClass) {
+        return (SugarRecord.class.isAssignableFrom(discoveredClass) &&
+                !SugarRecord.class.equals(discoveredClass)) ||
+                discoveredClass.isAnnotationPresent(Table.class);
     }
 }

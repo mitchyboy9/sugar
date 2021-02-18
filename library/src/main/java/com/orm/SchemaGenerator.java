@@ -37,7 +37,6 @@ public class SchemaGenerator {
     public static final String UNIQUE = " UNIQUE";
     public static final String SUGAR = "Sugar";
 
-    //Prevent instantiation
     private SchemaGenerator() { }
 
     public static SchemaGenerator getInstance() {
@@ -45,8 +44,8 @@ public class SchemaGenerator {
     }
 
     public void createDatabase(SQLiteDatabase sqLiteDatabase) {
-        Set<Class> domainClasses = getDomainClasses();
-        for (Class domain : domainClasses) {
+        Set<Class<?>> domainClasses = getDomainClasses();
+        for (Class<?> domain : domainClasses) {
             createTable(domain, sqLiteDatabase);
             afterTableCreated(domain,sqLiteDatabase);
         }
@@ -60,10 +59,10 @@ public class SchemaGenerator {
     }
 
     public void doUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        Set<Class> domainClasses = getDomainClasses();
+        Set<Class<?>> domainClasses = getDomainClasses();
         String sql = "select count(*) from sqlite_master where type='table' and name='%s';";
 
-        for (Class domain : domainClasses) {
+        for (Class<?> domain : domainClasses) {
             String tableName = NamingHelper.toTableName(domain);
             Cursor c = sqLiteDatabase.rawQuery(String.format(sql, tableName), null);
             if (c.moveToFirst() && c.getInt(0) == 0) {
@@ -90,8 +89,8 @@ public class SchemaGenerator {
 
 
     public void deleteTables(SQLiteDatabase sqLiteDatabase) {
-        Set<Class> tables = getDomainClasses();
-        for (Class table : tables) {
+        Set<Class<?>> tables = getDomainClasses();
+        for (Class<?> table : tables) {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + NamingHelper.toTableName(table));
         }
     }
@@ -297,5 +296,4 @@ public class SchemaGenerator {
             }
         }
     }
-
 }
