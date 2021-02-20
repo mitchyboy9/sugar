@@ -10,6 +10,7 @@ import com.orm.annotation.Table;
 import com.orm.helper.ManifestHelper;
 import com.orm.helper.NamingHelper;
 import com.orm.util.classdiscovery.DexClassScanner;
+import com.orm.util.classdiscovery.JarClassScanner;
 import com.orm.util.classdiscovery.ResourcesClassScanner;
 
 import java.lang.reflect.Field;
@@ -278,8 +279,23 @@ public final class ReflectionUtil {
     }
 
     private static Set<String> getAllClassesRunningWithRobolectric(String domainPackageName) {
+        Set<String> allFullyQualifiedClassNamesInPackage = getAllClassesFromResourceDirectories(domainPackageName);
+        allFullyQualifiedClassNamesInPackage.addAll(getAllClassesFromClasspathJars(domainPackageName));
+
+        return allFullyQualifiedClassNamesInPackage;
+    }
+
+    private static Set<String> getAllClassesFromResourceDirectories(String domainPackageName) {
         ResourcesClassScanner resourcesClassScanner = new ResourcesClassScanner(Thread.currentThread().getContextClassLoader());
         return resourcesClassScanner.getAllFullyQualifiedClassNamesInPackage(domainPackageName);
+    }
+
+    private static Set<String> getAllClassesFromClasspathJars(String domainPackageName) {
+        String classpath = System.getProperty("java.class.path");
+        String[] classpathEntries = classpath.split(System.getProperty("path.separator"));
+
+        JarClassScanner jarClassScanner = new JarClassScanner(classpathEntries);
+        return jarClassScanner.getAllFullyQualifiedClassNamesInPackage(domainPackageName);
     }
 
     private static Set<Class<?>> getAllClassesThatRepresentSugarTables(Set<String> candidateQualifiedClassNames) {
